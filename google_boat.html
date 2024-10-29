@@ -176,13 +176,13 @@
         <section id="high-level-design">
             <h1>High Level Design</h1>
                 <p>After reviewing the use cases and requirements, it was important to think about how the design of this project will work. It became clear that attempting to use a single architectural pattern across the system would not be beneficial, so we aimed to decompose the problem into more manageable pieces.  </p>
-                <p>The first category encompasses real-time position tracking and vessel monitoring. This includes immediate processing and response times, handling constant streams of GPS data and position updates for multiple boats on the water. The systems need to track the user’s boat and maintain awareness of other boats in the area. This category requires event-driven architecture for the best performance.  </p>
+                <p>The first category encompasses real-time entity tracking and vessel monitoring. This includes immediate processing and response times, handling constant streams of GPS data and position updates for multiple boats on the water. The systems need to track the user’s boat and maintain awareness of other boats in the area. This category requires event-driven architecture for the best performance.  </p>
                 <p>The second category involves navigation and path optimization. This domain focuses on calculations for route planning, looking at different things such as weather, fuel efficiency, and personal boat specs. These components require computational resources but operate on a request response basis.  Navigation information will be cached to the user and saved on the application to ensure no loss of navigation if internet service is lost. </p>
-                <p>The third category is mapping layer management and environmental data processing. This domain handles the integration and visualization of different data streams. The data streams this domain handles include depth information, weather conditions, and wave/tide data.  These components need to process and combine different data sources in real-time while keeping optimal system performance.  </p>
+                <p>The third category is map layer management and environmental data processing. This domain handles the integration and visualization of different data streams. The data streams this domain handles include depth information, weather conditions, and wave/tide data.  These components need to process and combine different data sources in real-time while keeping optimal system performance.  </p>
                 <p>The fourth category focuses on personal boat management and user data. Boat specifications, maintenance schedules, and user preferences are what this domain focuses on. Data persistence and storage are important as well as periodic updates.  </p>
                 <p>By breaking our problem down into these four categories, we determined that a microservice architecture running on Kubernetes will provide the necessary flexibility and scalability for our project. Additionally, this will allow each component to use appropriate architectures for its specific requirements. The high-level module view of our design is shown below in Figure X.  </p>
                 <p>DIAGRAM </p>
-                <p>We will structure the software system that implements these categories of requirements into four main modules, each encapsulated within the microservice architecture. The Real-Time Positioning Module handles continuous position tracking and vessel monitoring with an event-driven architecture.  Then, the Navigation Module will manage pathfinding with computational services. The Mapping Layers Module looks at and combines different environmental and geographical data. Finally, the Personal Boat Module handles everything needed for the user’s boat like maintenance and boat specs. All of these modules are managed and coordinated through Kubernetes. Having container orchestration will ensure high availability, and efficient resource utilization.  </p>  
+                <p>We will structure the software system that implements these categories of requirements into four main modules, each encapsulated within the microservice architecture. The Real-Time Entity Positioning Module handles continuous position tracking and vessel monitoring with an event-driven architecture.  Then, the Navigation Module will manage pathfinding with computational services. The Map Layers Module looks at and combines different environmental and geographical data. Finally, the Personal Boat Module handles everything needed for the user’s boat like maintenance and boat specs. All of these modules are managed and coordinated through Kubernetes. Having container orchestration will ensure high availability, and efficient resource utilization.  </p>  
         </section>
         <section id="modules">
             <h1>Modules</h1>
@@ -213,9 +213,9 @@
                     <tr>
                         <th>Requirement ID</th>
                         <th>Requirement Description</th>
-                        <th>Real-Time Positioning Module</th>
+                        <th>Real-Time Entity Module</th>
                         <th>Navigation Module</th>
-                        <th>Mapping Layers Module</th>
+                        <th>Map Layers Module</th>
                         <th>Personal Boat Module</th>
                     </tr>
                     <!-- Functional Requirements -->
