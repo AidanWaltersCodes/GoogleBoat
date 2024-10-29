@@ -138,17 +138,305 @@
             <h2>Use Case 2: Experienced Recreational Boater</h2>
             <p>Sarah is a 45-year-old teacher who has been enjoying recreational boating for many years. She owns a mid-sized motorboat and takes her family on many trips during weekend getaways. As someone who is experienced with boating, she is mainly concerned with planning efficient routes to save time and fuel costs. Sarah also wants to make sure that she gets reminders of when she needs to get maintenance checks on her boat so she can take care of her boat. </p>
             <p>Sarah also likes the app’s ability to display the location of other boats in the area. The crowdsourced information from the app helps her make choices about which areas to visit and when. When exploring new boating spots, Sarah uses the Google Boat search functionality to find popular places to check out.  </p>
-            <p>In both use cases, Google Boat proves to be a useful and easy-to-use solution, helping each user’s specific needs. By providing a range of features that help with safety, efficiency, and overall enjoyment. Google Boat establishes itself as a necessary tool for boaters and fishers of all skill levels. </p>
+            <h4>In both use cases, Google Boat proves to be a useful and easy-to-use solution, helping each user’s specific needs. By providing a range of features that help with safety, efficiency, and overall enjoyment. Google Boat establishes itself as a necessary tool for boaters and fishers of all skill levels. </h4>
         </div>
     </section>
         <section id="requirements">
             <h1>Requirements</h1>
+            <h4>Functional Requirements</h4>
+            <p>FR-1. The mobile application must have a map. </p>
+            <p>FR-2. The app must use GPS (Global Position System) to map current boat location and location of other boats. </p>
+            <p>FR-3. The app must have a map layer of waterways (lakes and oceans) and nearby land (determine mile radius). </p>
+            <p>FR-4. The app must ingest wind conditions and have a map layer to be added on top of waterways. </p>
+            <p>FR-5. The app must ingest tide and wave conditions and have a map layer to be added on top of waterways. </p>
+            <p>FR-6. The app must give ability for users to report areas of concern (debris, person overboard, etc). </p>
+            <p>FR-7. The app must prompt users if to provide their location and share that location with other users of the application. </p>
+            <p>FR-8. The app must have a search feature to look up waterways (lakes and oceans) and land destinations (docks and harbors). </p>
+            <p>FR-9. The app must provide navigation to other destinations (docks, harbors, or open water). </p>
+            <p>FR-10. For open water destinations, the app must prompt user distance (in nautical miles) they’d like to travel. </p>
+            <p>FR-11. For land destinations, the app must provide a fasted path through the waterways. The app must use weather, tide, and other vessels on water to create optimal path. </p>
+            <p>FR-12. The app must have a customizable checklist feature where the user can provide a list of items that must be complete before starting a navigation. </p>
+            <p>FR-13. The app must provide a feature for the user to provide their own boat information called “My Boat” (including where it’s docked, home dock is an option). </p>
+            <p>FR-14. The app must use boat information, weight, hull type, engine, to inform navigation in predicting length of navigation and gas consumed during trip. </p>
+            <p>FR-15. The app will provide generic notifications on normal maintenance checks on parts of the boats. </p>
+            <p>FR-16. The app must have an AI assisted feature to provide also provide suggested path through waterways for both water and land destinations; the suggested path will provide user if they’d like to maximize on fasted path or varying speeds of travel on certain paths to lower gas consumption. </p>
+            <p>FR-17. The app must save the location you departed from your navigation and use this location (if the user doesn’t override) to navigate back (implies can already start calculating the path back to make it faster). </p>
+            <p>FR-18. The map must be grayed out if the user is not within range of water.  </p>
+            <p>FR-19. The map must have compass. </p>
+            <h4>Non-Functional Requirements</h4>
+            <p>NFR-1. The app must be available on Android Studio and the Apple Store. </p>
+            <p>NFR-2. The app must respond in x time for locations in a 20-mile radius (implies caching). </p>
+            <p>NFR-3. The app must respond in y time for locations outside of 20-mile radius (implies needing to grab from central database). </p>
+            <p>NFR-4. The app must provide navigation path to destination in a maximum 2 minutes, however a navigation path back from the destination in 20 seconds (can start calculations ahead of time since most likely the user will be returning on where they start). </p>
+            <p>NFR-5. The app must prompt all users if they want to share their geolocation and notify the app will have limited features without it.</p>
+            <p>NFR-6. The app must notify user to rely on boat’s technology during the navigation for the most accurate data. </p>
+            <p>NFR-7. All data to the app must be encrypted. </p>
+            <p>NFR-8. The backend servers must be running in Kubernetes to provide high availability to users (microservice architecture). </p>
         </section>
         <section id="high-level-design">
             <h1>High Level Design</h1>
+                <p>After reviewing the use cases and requirements, it was important to think about how the design of this project will work. It became clear that attempting to use a single architectural pattern across the system would not be beneficial, so we aimed to decompose the problem into more manageable pieces.  </p>
+                <p>The first category encompasses real-time position tracking and vessel monitoring. This includes immediate processing and response times, handling constant streams of GPS data and position updates for multiple boats on the water. The systems need to track the user’s boat and maintain awareness of other boats in the area. This category requires event-driven architecture for the best performance.  </p>
+                <p>The second category involves navigation and path optimization. This domain focuses on calculations for route planning, looking at different things such as weather, fuel efficiency, and personal boat specs. These components require computational resources but operate on a request response basis.  Navigation information will be cached to the user and saved on the application to ensure no loss of navigation if internet service is lost. </p>
+                <p>The third category is mapping layer management and environmental data processing. This domain handles the integration and visualization of different data streams. The data streams this domain handles include depth information, weather conditions, and wave/tide data.  These components need to process and combine different data sources in real-time while keeping optimal system performance.  </p>
+                <p>The fourth category focuses on personal boat management and user data. Boat specifications, maintenance schedules, and user preferences are what this domain focuses on. Data persistence and storage are important as well as periodic updates.  </p>
+                <p>By breaking our problem down into these four categories, we determined that a microservice architecture running on Kubernetes will provide the necessary flexibility and scalability for our project. Additionally, this will allow each component to use appropriate architectures for its specific requirements. The high-level module view of our design is shown below in Figure X.  </p>
+                <p>DIAGRAM </p>
+                <p>We will structure the software system that implements these categories of requirements into four main modules, each encapsulated within the microservice architecture. The Real-Time Positioning Module handles continuous position tracking and vessel monitoring with an event-driven architecture.  Then, the Navigation Module will manage pathfinding with computational services. The Mapping Layers Module looks at and combines different environmental and geographical data. Finally, the Personal Boat Module handles everything needed for the user’s boat like maintenance and boat specs. All of these modules are managed and coordinated through Kubernetes. Having container orchestration will ensure high availability, and efficient resource utilization.  </p>  
         </section>
         <section id="modules">
             <h1>Modules</h1>
+                <h2>Requirements Traceability Matrix</h2>
+                <style>
+                    .matrix-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin: 20px 0;
+                    }
+                    .matrix-table th, .matrix-table td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: left;
+                    }
+                    .matrix-table th {
+                        background-color: #f4f4f4;
+                    }
+                    .matrix-table tr:nth-child(even) {
+                        background-color: #f9f9f9;
+                    }
+                    .checkmark {
+                        color: #4CAF50;
+                        font-weight: bold;
+                    }
+                </style>
+                <table class="matrix-table">
+                    <tr>
+                        <th>Requirement ID</th>
+                        <th>Requirement Description</th>
+                        <th>Real-Time Positioning Module</th>
+                        <th>Navigation Module</th>
+                        <th>Mapping Layers Module</th>
+                        <th>Personal Boat Module</th>
+                    </tr>
+                    <!-- Functional Requirements -->
+                    <tr>
+                        <td>FR-1</td>
+                        <td>Mobile application must have a map</td>
+                        <td></td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-2</td>
+                        <td>GPS mapping of current boat location and other boats</td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-3</td>
+                        <td>Map layer of waterways and nearby land</td>
+                        <td></td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-4</td>
+                        <td>Wind conditions map layer</td>
+                        <td></td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-5</td>
+                        <td>Tide and wave conditions map layer</td>
+                        <td></td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-6</td>
+                        <td>User reporting of areas of concern</td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-7</td>
+                        <td>Location sharing functionality</td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-8</td>
+                        <td>Search feature for waterways and destinations</td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-9</td>
+                        <td>Navigation to destinations</td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-10</td>
+                        <td>Open water distance prompts</td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-11</td>
+                        <td>Optimal path calculation</td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-12</td>
+                        <td>Customizable pre-navigation checklist</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                    </tr>
+                    <tr>
+                        <td>FR-13</td>
+                        <td>"My Boat" information feature</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                    </tr>
+                    <tr>
+                        <td>FR-14</td>
+                        <td>Boat specifications for navigation calculations</td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                    </tr>
+                    <tr>
+                        <td>FR-15</td>
+                        <td>Maintenance check notifications</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                    </tr>
+                    <tr>
+                        <td>FR-16</td>
+                        <td>AI-assisted path suggestions</td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-17</td>
+                        <td>Return navigation calculation</td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-18</td>
+                        <td>Map graying out of non-water areas</td>
+                        <td></td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FR-19</td>
+                        <td>Compass functionality</td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                    </tr>
+                    <!-- Non-Functional Requirements -->
+                    <tr>
+                        <td>NFR-1</td>
+                        <td>Cross-platform availability</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                    </tr>
+                    <tr>
+                        <td>NFR-2</td>
+                        <td>Response time for local radius</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>NFR-3</td>
+                        <td>Response time for extended radius</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>NFR-4</td>
+                        <td>Navigation calculation time constraints</td>
+                        <td></td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>NFR-5</td>
+                        <td>Geolocation sharing prompt</td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>NFR-6</td>
+                        <td>Boat technology reliance notification</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>NFR-7</td>
+                        <td>Data encryption</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                    </tr>
+                    <tr>
+                        <td>NFR-8</td>
+                        <td>Kubernetes high availability</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                        <td class="checkmark">✓</td>
+                    </tr>
+                </table>
         </section>
         <section id="design-rational">
             <h1>Design Rational</h1>
