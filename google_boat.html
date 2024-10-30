@@ -230,6 +230,7 @@
 
             <h4>Personal Boat Module</h4>
             <p>The Personal Boat Module is responsible for managing user-specific boat information and related features. The Module will provide a feature called “My Boat” where users can input certain things about their boat into the app. This includes details like the boat’s make, model, weight, engine specifications, and where the boat is docked (Including a set home dock). The boat information stored in the Personal Boat Modules is used by the Navigation Module to help guide navigation predictions. The different aspects of the user’s boat will be taken into account when estimating the duration of the navigation as well as the fuel consumed. The Module will also remind the user about maintenance checks on different parts of the boat. It will help users keep track of when they need to have maintenance checks to allow the boat to remain in proper condition. Additionally, the Module is responsible for securely storing the user-specific boat data.  </p>
+            <p>Data storage and management can be implemented using PostgreSQL for structured boat data storage. Different tables will include boats, engines, docking locations, maintenance records, and maintenance schedules.  The maintenance tracking system can be implemented with a simple background service like Quartz Scheduler. The maintenance checks will be based on engine hours, calendar time, seasonal requirements, and manufacturer recommendations. There will be push notifications for upcoming maintenance dates, overdue maintenance, and seasonal reminders for maintenance. Amazon Simple Queue Service will be set up to send messages to users who have them enabled. Security is implemented through Advanced Encryption Standard 256, and AWS Key Management Service for key management. Data will be encrypted in transit and at rest. When the user would like to use the checklists in the Personal Boat side of the application they will be allowed to do safety equipment verifications, weather condition checks, documentation requirement checks, fuel and fluid levels measurements, as well as navigation equipment checks on board. </p>
             <div style="text-align: center;">
                 <img src="images/UML.png" alt="Website Logo" width="775" height="auto">
                 <p style="font-style: italic; margin-top: 10px;">Figure 5: Personal Boat UML Diagram</p>
@@ -486,6 +487,17 @@
         </section>
         <section id="design-rational">
             <h1>Design Rational</h1>
+            <h4>Real-Time Entity Positioning Module</h4>
+
+
+            <h4>Map Layers Module </h4>
+
+
+            <h4>Navigation Module </h4>
+
+
+            <h4>Personal Boat Module </h4>
+            <p>The Personal Boat Module was designed with a focus on user-specific data management and maintenance tracking. This module addresses several key requirements. The Module supports the “My Boat” information feature by providing a simple and effective way to store and manage boat details (FR-13).  The separation between boat specifications and maintenance records allows for different updates and management. When thinking about the Personal Boat Module deseign it is necessary to support maintenance tracking to allow for user’s boats to remain up-to-date and safe to use (FR-15). The Module’s design ensures boat specifications like weight, engine type, hull, fuel type are all available so that the Navigation Module can accurately plan trips and calculate fuel consumption (FR-14). Implementing a customizable checklist system (FR-12) allows for additional safety to help users make sure they have everything they need before they leave on their trip.  This allows flexibility for the different users of the application. The module’s design also supports NRF-7 (data encryption) by centralizing sensitive boat information only to be seen by the user.  Additionally, the module’s architecture also supports NFR-8 through its compatibility with the microservice architecture running on Kubernetes. By running on Kubernetes, the application will ensure high availability of boat management features. All of these features are to help the user experience, and it allows for other modules to perform with information about a user’s boat.  </p>
         </section>
         <section id="final-thoughts">
             <h1>Final Thoughts</h1>
