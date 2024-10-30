@@ -175,18 +175,51 @@
         </section>
         <section id="high-level-design">
             <h1>High Level Design</h1>
-                <p>After reviewing the use cases and requirements, it was important to think about how the design of this project will work. It became clear that attempting to use a single architectural pattern across the system would not be beneficial, so we aimed to decompose the problem into more manageable pieces.  </p>
-                <p>The first category encompasses real-time entity tracking and vessel monitoring. This includes immediate processing and response times, handling constant streams of GPS data and position updates for multiple boats on the water. The systems need to track the user’s boat and maintain awareness of other boats in the area. This category requires event-driven architecture for the best performance.  </p>
-                <p>The second category involves navigation and path optimization. This domain focuses on calculations for route planning, looking at different things such as weather, fuel efficiency, and personal boat specs. These components require computational resources but operate on a request response basis.  Navigation information will be cached to the user and saved on the application to ensure no loss of navigation if internet service is lost. </p>
-                <p>The third category is map layer management and environmental data processing. This domain handles the integration and visualization of different data streams. The data streams this domain handles include depth information, weather conditions, and wave/tide data.  These components need to process and combine different data sources in real-time while keeping optimal system performance.  </p>
-                <p>The fourth category focuses on personal boat management and user data. Boat specifications, maintenance schedules, and user preferences are what this domain focuses on. Data persistence and storage are important as well as periodic updates.  </p>
-                <p>By breaking our problem down into these four categories, we determined that a microservice architecture running on Kubernetes will provide the necessary flexibility and scalability for our project. Additionally, this will allow each component to use appropriate architectures for its specific requirements. The high-level module view of our design is shown below in Figure X.  </p>
-                <p>DIAGRAM </p>
-                <p>We will structure the software system that implements these categories of requirements into four main modules, each encapsulated within the microservice architecture. The Real-Time Entity Positioning Module handles continuous position tracking and vessel monitoring with an event-driven architecture.  Then, the Navigation Module will manage pathfinding with computational services. The Map Layers Module looks at and combines different environmental and geographical data. Finally, the Personal Boat Module handles everything needed for the user’s boat like maintenance and boat specs. All of these modules are managed and coordinated through Kubernetes. Having container orchestration will ensure high availability, and efficient resource utilization.  </p>  
-        </section>
+           <p>After reviewing the use cases and requirements, it was important to think about how the design of this project will work. It became clear that attempting to use a single architectural pattern across the system would not be beneficial, so we aimed to decompose the problem into more manageable pieces. </p>
+           <p>The first category encompasses real-time entity positioning and vessel monitoring. This includes immediate processing and response times, handling constant streams of GPS data and position updates for multiple boats on the water. The systems need to track the user's boat and maintain awareness of other boats in the area. This category requires event-driven architecture for the best performance. </p>
+           <p>The second category involves navigation and path optimization. This domain focuses on calculations for route planning, looking at different things such as weather, fuel efficiency, and personal boat specs. These components require computational resources but operate on a request response basis. Navigation information will be cached to the user and saved on the application to ensure no loss of navigation if internet service is lost. </p>
+           <p>The third category is map layer management and environmental data processing. This domain handles the integration and visualization of different data streams. The data streams this domain handles include depth information, weather conditions, and wave/tide data. These components need to process and combine different data sources in real-time while keeping optimal system performance. </p>
+           <p>The fourth category focuses on personal boat management and user data. Boat specifications, maintenance schedules, and user preferences are what this domain focuses on. Data persistence and storage are important as well as periodic updates. </p>
+           <p>By breaking our problem down into these four categories, we determined that a microservice architecture running on Kubernetes will provide the necessary flexibility and scalability for our project. Additionally, this will allow each component to use appropriate architectures for its specific requirements. The high-level module view of our design is shown below in Figure 1. </p>
+           <div style="text-align: center;">
+               <img src="images/diagram.png" alt="Website Logo" width="775" height="auto" style="border-radius: 15px;">
+               <p style="font-style: italic; margin-top: 10px;">Figure 1: Module View of Google Boat Architecture</p>
+           </div>
+           <p>We will structure the software system that implements these categories of requirements into four main modules, each encapsulated within the microservice architecture. The Real-Time Entity Positioning Module handles continuous position tracking and vessel monitoring with an event-driven architecture. Then, the Navigation Module will manage pathfinding with computational services. The Map Layers Module looks at and combines different environmental and geographical data. Finally, the Personal Boat Module handles everything needed for the user's boat like maintenance and boat specs. All of these modules are managed and coordinated through Kubernetes. Having container orchestration will ensure high availability, and efficient resource utilization. </p>
+           </section>
         <section id="modules">
             <h1>Modules</h1>
-                <h2>Requirements Traceability Matrix</h2>
+
+            <h4>Real-Time Entity Positioning Module</h4>
+            <p>The Real-Time Entity Positioning Module is responsible for providing the location of vessels on the water. Users need to always know their location along with the location of other boats and ships for tracking and navigation purposes. The first component used for real-time positioning is Global Positioning System (GPS) data. The GPS data comes from the global navigation satellite system (GNSS), operated by the US Space Force, which is a network of satellites used to provide positioning services. GPS receivers are used to retrieve data from satellites, and, for civilian applications, provide accuracy of within 5 meters. All smartphones are equipped with GPS receivers to get location data. This location data will be used to locally track user’s boat on the app and will also be streamed to backend servers at a constant interval. The mobile app will also give a reporting feature to users to crowdsource information about potential hazards in the waterways, like submerged objects. </p>
+            <p>From here, all mobile users’ GPS data is aggregated into the real-time entity positioning module. This module is responsible for storing GPS data from all active users and reporting a list of entities to mobile app to plot on the map for the users within a radius of concern. For example, if John and Sarah were using the app and within a 20-mile radius of each other, then they would see each other on the map since their GPS data is shared to the backend. In addition, the real-time entity positioning module would receive AIS data feed. The Automatic Identification System (AIS) is currently used for navigation safety amongst mariners and primarily used for collision avoidance. The real-time entity positioning module can access this data via REST API to have live AIS data about vessels around the area for enhanced tracking and will be fed into the navigation algorithm. The server will provide the mobile client data of interested entities in the area, which will include id, position, velocity, and other attributes used to properly map entities in the waterways. The velocity can be calculated using positioning over time and is important so the mobile app can predict vessel movement while waiting for the server to update data. The mobile app will stay lean and not keep a record of previous data provided from the server, only live data, and request historical data from the server when needed. All data will be stored in a time series database, which is designed to store data over time, and will handle all CRUD (Create Read Update Delete) operations. </p>
+            <div style="text-align: center;">
+                <img src="images/entity.png" alt="Website Logo" width="775" height="auto" style="border-radius: 15px;">
+                <p style="font-style: italic; margin-top: 10px;">Figure 2: Entity Positioning Module Flow</p>
+            </div>
+            <h4>Map Layers Module</h4>
+            <p>The Map Layers module is responsible for providing the map to the users on the mobile app. GoogleBoat wants to provide the same feature as GoogleMap where a user can see a map of their surroundings, but specifically for waterways. The mapping layers would also provide different views of the waterways, such as regular and satellite. Map layers are geospatial information containing points, lines, or other shapes to represent an area in the world. For GoogleBoat, there are three different map layers: base, maritime, and weather. A base layer is the foundation where all other layers are added on top of and acts as the background; the maritime layer will be an optional layer to show water topography, including ridges and depth; the weather layer will be another optional layer to show weather conditions, such as temperature, wind conditions, and any upcoming warnings. These layers will give users the most information necessary about boating conditions and provide necessary data for the navigation module for route pathing needs.  </p>
+            <p>The architecture used to gather mapping layer data is pipe and filter. Each of the three layers are retrieved from three different sources and need a data pipeline to be served to the mobile app. First, the base layer is retrieved from the OpenStreetMap API, which is a popular source for crowdsource map data; Apple Maps uses OpenStreetMap for its mapping and there is a popular JavaScript library called Leaflet for mobile-friendly maps. However, GoogleBoat needs to be parsed directly from OpenStreetMap since it’s acting as the base for all other layers. The OpenStreetMap data is passed through a JSON parser filter, which is a common data format from REST API endpoints. Next, for the maritime layer, the National Oceanic and Atmospheric Administration (NOAA) offers Electronic Navigation Charts (ENC) that contain map layers including depth, tides, current, harbors, ports, etc. This data is provided by a Web Map Service (WMS), which is a common protocol used to service map images via the web in a specific JSON format; therefore, the maritime data is passed through a WMS parser filter. Lastly, the National Weather Service (also under NOAA) also offers weather map layers, but in a Keyhole Markup Language (KML), which is similar to WMS, but in XML. All three parser filters are piped into a single union filter to bring all the data under the same table. With map layers, there is different zoom levels a user can view; a zoom level adjuster filter is needed to extrapolate the data such that use all the same zoom levels. Finally, there is a spatial analysis filter, which is to separate the data back into three different layers and prepare it to be stored into a geodatabase. </p>
+
+            <div style="text-align: center;">
+                <img src="images/layers.png" alt="Website Logo" width="975" height="auto">
+                <p style="font-style: italic; margin-top: 10px;">Figure 3: Map Layers Module Flow</p>
+            </div>
+
+            <h4>Navigation Module</h4>
+            <p></p>
+            <div style="text-align: center;">
+                <img src="images/navigation.png" alt="Website Logo" width="775" height="auto">
+                <p style="font-style: italic; margin-top: 10px;">Figure 4: Navigation Module Flow</p>
+            </div>
+
+            <h4>Personal Boat Module</h4>
+            <p>The Personal Boat Module is responsible for managing user-specific boat information and related features. The Module will provide a feature called “My Boat” where users can input certain things about their boat into the app. This includes details like the boat’s make, model, weight, engine specifications, and where the boat is docked (Including a set home dock). The boat information stored in the Personal Boat Modules is used by the Navigation Module to help guide navigation predictions. The different aspects of the user’s boat will be taken into account when estimating the duration of the navigation as well as the fuel consumed. The Module will also remind the user about maintenance checks on different parts of the boat. It will help users keep track of when they need to have maintenance checks to allow the boat to remain in proper condition. Additionally, the Module is responsible for securely storing the user-specific boat data.  </p>
+            <div style="text-align: center;">
+                <img src="images/UML.png" alt="Website Logo" width="775" height="auto">
+                <p style="font-style: italic; margin-top: 10px;">Figure 5: Personal Boat UML Diagram</p>
+            </div>
+            <h2>Requirements Traceability Matrix</h2>
                 <style>
                     .matrix-table {
                         width: 100%;
@@ -213,12 +246,11 @@
                     <tr>
                         <th>Requirement ID</th>
                         <th>Requirement Description</th>
-                        <th>Real-Time Entity Module</th>
+                        <th>Real-Time Entity Positioning Module</th>
                         <th>Navigation Module</th>
                         <th>Map Layers Module</th>
                         <th>Personal Boat Module</th>
                     </tr>
-                    <!-- Functional Requirements -->
                     <tr>
                         <td>FR-1</td>
                         <td>Mobile application must have a map</td>
@@ -371,7 +403,6 @@
                         <td class="checkmark">✓</td>
                         <td></td>
                     </tr>
-                    <!-- Non-Functional Requirements -->
                     <tr>
                         <td>NFR-1</td>
                         <td>Cross-platform availability</td>
