@@ -203,14 +203,29 @@
 
             <div style="text-align: center;">
                 <img src="images/layers.png" alt="Website Logo" width="975" height="auto">
-                <p style="font-style: italic; margin-top: 10px;">Figure 3: Map Layers Module Flow</p>
+                <p style="font-style: italic; margin-top: 10px;">Figure 3: Map Layers Module Flow (Pipe and Filter Architecture)</p>
             </div>
 
             <h4>Navigation Module</h4>
-            <p></p>
+            <p>The Navigation module is responsible for route planning and path optimization. The navigation module focuses on taking a destination input from the user and calculates the best route for their boat. First, a user puts a place a destination 
+                they'd like to travel, and the application will list of harbors and ports the user can go to. Alongside the list of locations, the user can dock their boat at, it will provide a preview of the path and gas consumption from their boat. The
+                navigation module can calculate the destination, path, and gas consumption by using all three other modules. The navigation module uses the map layers module to avoid shallow
+                waters and understand the weather and water conditions. The navigation module uses the real-time entity positioning to track the boat's location during the travel and avoid other vessels in the water. The navigation module uses the personal boat module
+                to calculate how much gas will likely be consumed by using the boat's weight, speed, hull-type, etc. By combining the data from all the modules, the navigation module can make calculations like going to a certain angle that goes with water tides to
+                save the most amount of gas. Then the user then confirms its destination and provides the mobile phone with the navigation details; this information is cached onto the device in the case an internet connection is lost. In addition, the backend server can create calculations for the route back and cache that on the device as well since the user will most 
+                likely return where they came from. During the navigation, the module adopts a process control architecture by using the user's GPS location to have live updates on the routing to the destination. The navigation will also use the other modules to avoid collision
+                with other vessels and inform the user if anything changes with weather or terrain. 
+            </p>
+            <p>
+                The Navigation module also takes advantage of AI/ML by storing all its users' navigation data. With this, the navigation module can start making more accurate calculations of estimated time arrival and better pathing
+                for the user. For example, if the estimated time was 2 hours, but the user actually took 3 hours, it can use this information when making its next prediction (barring that the boat will move at the pace the algorithm predicted and
+                the route provided was followed). In addition, this feature will allow for AI-assisted navigation; when a user inputs a destination and selects a docking location, the app can suggest two different routes: one to prioritize the fastest path and another to
+                optimize fuel consumption. It can also suggest the user the best time to leave for its destination by using weather, tides, shipping routes, etc. The possibilities grow exponentially by storing the navigation data and using all the information from 
+                the other modules.
+            </p>
             <div style="text-align: center;">
                 <img src="images/navigation.png" alt="Website Logo" width="775" height="auto">
-                <p style="font-style: italic; margin-top: 10px;">Figure 4: Navigation Module Flow</p>
+                <p style="font-style: italic; margin-top: 10px;">Figure 4: Navigation Module Flow (Process Control Architecture)</p>
             </div>
 
             <h4>Personal Boat Module</h4>
